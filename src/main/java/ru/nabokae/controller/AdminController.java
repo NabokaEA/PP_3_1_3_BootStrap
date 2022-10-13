@@ -7,7 +7,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.nabokae.entity.Role;
 import ru.nabokae.entity.User;
@@ -15,7 +14,6 @@ import ru.nabokae.sequrity.UserDetailsImpl;
 import ru.nabokae.service.RoleService;
 import ru.nabokae.service.UserService;
 
-import javax.validation.Valid;
 import java.util.*;
 
 
@@ -33,7 +31,7 @@ public class AdminController {
     }
 
     @GetMapping("/all")
-    public String ListPage(Model model, User user) {
+    public String ListPage(Model model) {
         logger.info("Запрошен список пользьзователей");
         model.addAttribute("usersAll", userService.findAllByOrderByIdAsc());
         Authentication autentication = SecurityContextHolder.getContext().getAuthentication();
@@ -45,9 +43,9 @@ public class AdminController {
         for (GrantedAuthority gauth : hashSet) {
             role = role + " " + gauth.getAuthority().substring(5);
         }
-        List<Role> roleList = roleService.findAll();
+        List<Role> roleHashSet = roleService.findAll();
         model.addAttribute("PrincipalRoles", role);
-        model.addAttribute("AllRoles", roleList);
+        model.addAttribute("AllRoles", roleHashSet);
 
         return "BS_admin_page";
     }
@@ -67,7 +65,7 @@ public class AdminController {
     }
 
     @PostMapping("/all")
-    public String UpdateUser(@Valid @ModelAttribute("user") User user, BindingResult result) {
+    public String UpdateUser(User user) {
         logger.info("Запрошен обновленный список пользователей");
         userService.save(user);
         return "redirect:/admin/all";
