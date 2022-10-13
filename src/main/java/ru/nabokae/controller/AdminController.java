@@ -43,9 +43,11 @@ public class AdminController {
         for (GrantedAuthority gauth : hashSet) {
             role = role + " " + gauth.getAuthority().substring(5);
         }
-        List<Role> roleHashSet = roleService.findAll();
+        HashSet<Role> roleHashSet;
+        List<Role> roleList= roleService.findAll();
+        roleHashSet = new HashSet<Role>(roleList);
         model.addAttribute("PrincipalRoles", role);
-        model.addAttribute("AllRoles", roleHashSet);
+        model.addAttribute("AllRoles", roleList);
 
         return "BS_admin_page";
     }
